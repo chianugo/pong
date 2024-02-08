@@ -1,5 +1,5 @@
 const INITIAL_VELCITY = 0.025;
-const VELCOITY_INCREASE = 0.00001;
+const VELCOITY_INCREASE = 0.000005;
 export default class Ball {
   constructor(ballElement) {
     this.ballElement = ballElement;
@@ -46,11 +46,12 @@ export default class Ball {
     this.ballElement.style.setProperty("--y", value);
   }
 
-  update(delta) {
+  update(delta, paddleRects) {
     this.x += this.direction.x * this.velocity * delta;
     this.y += this.direction.y * this.velocity * delta;
-    this.velocity = Math.min(this.velocity + VELCOITY_INCREASE * delta, 7); // div by 2 causes trailing
+    this.velocity = Math.min(this.velocity + VELCOITY_INCREASE * delta, 0.18); // div by 2 causes trailing
     const rect = this.rect();
+    console.log(this.velocity);
 
     if (rect.bottom >= window.innerHeight || rect.top <= 0) {
       this.direction.y *= -1;
@@ -60,7 +61,7 @@ export default class Ball {
       );
     }
 
-    if (rect.right >= window.innerWidth || rect.left <= 0) {
+    if (paddleRects.some((r) => isCollision(r, rect))) {
       this.direction.x *= -1;
       document.documentElement.style.setProperty(
         "--hue",
@@ -68,6 +69,15 @@ export default class Ball {
       );
     }
   }
+}
+
+function isCollision(rect1, rect2) {
+  return (
+    rect1.left <= rect2.right &&
+    rect1.right >= rect2.left &&
+    rect1.top <= rect2.bottom &&
+    rect1.bottom >= rect2.top
+  );
 }
 
 function randomNumberBetween(min, max) {

@@ -27,7 +27,7 @@ body {
   top: calc(var(--position) * 1vh);
   transform: translateY(-50%);
   width: 2vh;
-  height: 10vh;
+  height: 15vh;
 }
 
 .paddle.left {
